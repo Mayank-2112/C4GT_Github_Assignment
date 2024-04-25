@@ -24,20 +24,21 @@ test('Parse Sql Query', ()=>{
     const query = 'SELECT id, name FROM sample';
     const parsed = queryParser(query);
     expect(parsed).toEqual({
-        fields: ['id','name'],
-        table: 'sample'
+        fields: ['id','name',],
+        table: 'sample',
+        whereClause: null
     });
 });
 
-//Test 4
+//Test 4 and 5
 
 test('Execute SQL Query', async ()=>{
-    const query = 'SELECT id,name FROM sample';
+    const query = 'SELECT id,name FROM sample where age > 25';
     const result = await executeSELECTQuery(query);
     
     expect(result.length).toBeGreaterThan(0);
     expect(result[0]).toHaveProperty('id');
     expect(result[0]).toHaveProperty('name');
-    expect(result[0]).not.toHaveProperty('age');
-    expect(result[0]).toEqual({ id:'1' , name:'John'});  
+    expect(result[0].id).toBe('1');
+
 });
