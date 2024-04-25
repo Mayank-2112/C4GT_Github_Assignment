@@ -4,14 +4,24 @@ exports.queryParser = (query)=> {
     const match = query.match(selectRegex);
 
     if (match){
-        const [, fields, table, whereClause] = match;
+        const [, fields, table, whereString] = match;
+        const whereClauses = whereString ? parseWhereClause(whereString) : [];
         return{
             fields: fields.split(',').map(field => field.trim()),
             table: table.trim(),
-            whereClause: whereClause ? whereClause.trim() : null
+            whereClauses
         };
     }
     else{
         throw new Error('Invalid Query Format');
     }
 };
+
+function parseWhereClause(whereString){
+    const conditions = whereString.split(/ AND | OR /i);
+    return conditions.map(condition =>{
+        const [field, operator, value] = condition.split(/\s+/);
+        return {field, operator, value};
+    });
+};
+
